@@ -7,9 +7,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
   body {
     @apply bg-light-base text-dark font-poppins antialiased selection:bg-primary selection:text-white;
+    overflow-x: hidden;
   }
   h1, h2 {
     @apply font-protest;
@@ -17,6 +19,17 @@
   h3, h4, h5, h6 {
     @apply font-fredoka;
   }
+}
+
+/* Justification for long body text paragraphs & MDX prose */
+.text-justify,
+.prose p {
+  text-align: justify;
+  text-justify: inter-word;
+  text-align-last: left;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 @layer components {
@@ -33,7 +46,7 @@
   }
 
   .btn-secondary {
-    @apply font-now inline-flex items-center justify-center px-8 py-3.5 font-bold text-dark-base transition-all duration-300 rounded-full bg-primary hover:bg-opacity-90 shadow-md hover:-translate-y-0.5;
+    @apply font-now inline-flex items-center justify-center px-8 py-3.5 font-bold text-secondary border-2 border-secondary bg-transparent hover:bg-secondary hover:text-white transition-all duration-300 rounded-full shadow-sm hover:shadow-md hover:-translate-y-0.5;
   }
 
   .nav-link {
@@ -61,3 +74,31 @@
   background: #ed5b2d !important;
   opacity: 1 !important;
 }
+.testimonials-slider .swiper-button-next,
+.testimonials-slider .swiper-button-prev {
+  color: #ffaa17 !important;
+  transition: all 0.2s ease;
+}
+.testimonials-slider .swiper-button-next:hover,
+.testimonials-slider .swiper-button-prev:hover {
+  color: #ed5b2d !important;
+  transform: scale(1.15);
+}
+@media (max-width: 640px) {
+  .testimonials-slider .swiper-button-next,
+  .testimonials-slider .swiper-button-prev {
+    display: none !important;
+  }
+}
+
+/* Typing cursor blink animation */
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-cursor-blink {
+  animation: cursorBlink 0.8s step-end infinite;
+}
+
+

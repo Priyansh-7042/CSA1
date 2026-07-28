@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Phone, Mail, GraduationCap, Code2, Globe, Send, Baby, Star, Calendar as CalendarIcon, Clock, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import { api } from '../../lib/api';
 
@@ -11,6 +11,8 @@ const BookDemoPage: React.FC = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [step, setStep] = useState(1);
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
   const [formData, setFormData] = useState({
     phone: '',
@@ -41,6 +43,25 @@ const BookDemoPage: React.FC = () => {
     '10:00 PM'
   ];
 
+  useEffect(() => {
+    const fetchBookedSlots = async () => {
+      if (!selectedDate) {
+        setBookedSlots([]);
+        return;
+      }
+      setIsLoadingSlots(true);
+      const y = selectedDate.getFullYear();
+      const m = String(selectedDate.getMonth() + 1).padStart(2, '0');
+      const d = String(selectedDate.getDate()).padStart(2, '0');
+      const dateString = `${y}-${m}-${d}`;
+      const slots = await api.getBookedSlotsForDate(dateString);
+      setBookedSlots(slots);
+      setIsLoadingSlots(false);
+    };
+    
+    fetchBookedSlots();
+  }, [selectedDate]);
+
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -55,6 +76,31 @@ const BookDemoPage: React.FC = () => {
     return date < today;
   };
 
+  const isPastTime = (timeStr: string, date: Date | null) => {
+    if (!date) return false;
+    
+    const today = new Date();
+    const isToday = date.getDate() === today.getDate() && 
+                    date.getMonth() === today.getMonth() && 
+                    date.getFullYear() === today.getFullYear();
+    
+    if (!isToday) return false;
+
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+    
+    if (hours === 12) {
+      hours = modifier === 'PM' ? 12 : 0;
+    } else if (modifier === 'PM') {
+      hours += 12;
+    }
+
+    const slotTime = new Date();
+    slotTime.setHours(hours, minutes, 0, 0);
+    
+    return slotTime < today;
+  };
+
   const formatDateString = (date: Date) => {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -64,7 +110,14 @@ const BookDemoPage: React.FC = () => {
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
-    setFormData(prev => ({ ...prev, preferredDate: formatDateString(date) }));
+    setFormData(prev => {
+      const isCurrentTimeInvalid = prev.preferredTime && isPastTime(prev.preferredTime, date);
+      return { 
+        ...prev, 
+        preferredDate: formatDateString(date),
+        preferredTime: isCurrentTimeInvalid ? '' : prev.preferredTime
+      };
+    });
   };
 
   const handleTimeSelect = (time: string) => {
@@ -244,7 +297,7 @@ Preferred Time: ${formData.preferredTime}`;
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                       
                       {/* Calendar Widget */}
-                      <div className="lg:col-span-7 bg-gray-50/50 p-6 rounded-2xl border border-gray-100/60">
+                      <div className="lg:col-span-7 bg-gray-50/50 p-4 sm:p-6 rounded-2xl border border-gray-100/60">
                         <div className="flex items-center justify-between mb-6">
                           <h4 className="font-bold text-dark-base font-fredoka">
                             {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
@@ -283,7 +336,7 @@ Preferred Time: ${formData.preferredTime}`;
                             const days = [];
                             
                             for (let i = 0; i < firstDay; i++) {
-                              days.push(<div key={`empty-${i}`} className="h-10"></div>);
+                              days.push(<div key={`empty-${i}`} className="h-8 sm:h-10"></div>);
                             }
                             
                             for (let dayNum = 1; dayNum <= totalDays; dayNum++) {
@@ -300,7 +353,7 @@ Preferred Time: ${formData.preferredTime}`;
                                   type="button"
                                   disabled={isPast}
                                   onClick={() => handleDateSelect(dayDate)}
-                                  className={`h-10 w-10 mx-auto rounded-full text-xs font-bold flex items-center justify-center transition-all ${
+                                  className={`h-8 w-8 sm:h-10 sm:w-10 mx-auto rounded-full text-[11px] sm:text-xs font-bold flex items-center justify-center transition-all ${
                                     isSelected 
                                       ? 'bg-secondary text-white shadow-md shadow-secondary/20 scale-105' 
                                       : isPast 
@@ -324,21 +377,30 @@ Preferred Time: ${formData.preferredTime}`;
                         </label>
                         
                         {formData.preferredDate ? (
-                          <div className="grid grid-cols-2 gap-2 max-h-[280px] overflow-y-auto pr-1">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2 max-h-[280px] overflow-y-auto pr-1">
                             {TIME_SLOTS.map((time, idx) => {
                               const isSelected = formData.preferredTime === time;
+                              const isPast = isPastTime(time, selectedDate);
+                              const isBooked = bookedSlots.includes(time);
+                              
                               return (
                                 <button
                                   key={idx}
                                   type="button"
+                                  disabled={isPast || isBooked}
                                   onClick={() => handleTimeSelect(time)}
-                                  className={`py-3 rounded-xl border text-xs font-bold transition-all text-center ${
-                                    isSelected
+                                  className={`py-3 rounded-xl border text-xs font-bold transition-all text-center flex flex-col items-center justify-center ${
+                                    isBooked 
+                                      ? 'bg-emerald-50 text-emerald-600 border-emerald-200 cursor-not-allowed opacity-80'
+                                      : isSelected
                                       ? 'bg-secondary text-white border-secondary shadow-sm shadow-secondary/25'
-                                      : 'bg-gray-50 border-gray-100 text-dark-base hover:bg-gray-100 hover:border-gray-200 bg-white'
+                                      : isPast
+                                      ? 'bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed'
+                                      : 'bg-white border-gray-100 text-dark-base hover:bg-gray-100 hover:border-gray-200'
                                   }`}
                                 >
-                                  {time}
+                                  <span>{time}</span>
+                                  {isBooked && <span className="text-[10px] uppercase mt-1 opacity-90 font-semibold tracking-wider">Booked</span>}
                                 </button>
                               );
                             })}

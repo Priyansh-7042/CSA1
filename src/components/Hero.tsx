@@ -5,30 +5,40 @@ import { Terminal, Users, ShieldCheck, Languages, GraduationCap, ArrowRight, Cod
 import Link from 'next/link';
 import CodeRain from './CodeRain';
 
-const TYPING_WORDS = ["Code", "Logic", "Websites", "AI Models", "Games"];
+const TYPING_WORDS = ["Games", "Websites", "AI Models", "Mobile Apps", "Code & Logic"];
 
 const Hero: React.FC = () => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [currentText, setCurrentText] = useState('');
+  const [currentText, setCurrentText] = useState('Games');
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Smooth typing effect
   useEffect(() => {
-    const word = TYPING_WORDS[currentWordIndex];
-    const timeout = setTimeout(() => {
-      if (!isDeleting) {
-        setCurrentText(word.substring(0, currentText.length + 1));
-        if (currentText.length === word.length) {
-          setTimeout(() => setIsDeleting(true), 1500);
-        }
+    let timer: NodeJS.Timeout;
+    const currentWord = TYPING_WORDS[currentWordIndex];
+
+    if (!isDeleting) {
+      if (currentText !== currentWord) {
+        timer = setTimeout(() => {
+          setCurrentText(currentWord.slice(0, currentText.length + 1));
+        }, 100);
       } else {
-        setCurrentText(word.substring(0, currentText.length - 1));
-        if (currentText.length === 0) {
-          setIsDeleting(false);
-          setCurrentWordIndex((prev) => (prev + 1) % TYPING_WORDS.length);
-        }
+        timer = setTimeout(() => {
+          setIsDeleting(true);
+        }, 1800);
       }
-    }, isDeleting ? 50 : 150);
-    return () => clearTimeout(timeout);
+    } else {
+      if (currentText !== '') {
+        timer = setTimeout(() => {
+          setCurrentText(currentWord.slice(0, currentText.length - 1));
+        }, 50);
+      } else {
+        setIsDeleting(false);
+        setCurrentWordIndex((prev) => (prev + 1) % TYPING_WORDS.length);
+      }
+    }
+
+    return () => clearTimeout(timer);
   }, [currentText, isDeleting, currentWordIndex]);
 
   return (
@@ -48,7 +58,7 @@ const Hero: React.FC = () => {
             {/* Badge */}
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/5 backdrop-blur-md text-primary text-sm font-bold mb-8 animate-fade-in-up border border-white/10">
               <Terminal className="w-4 h-4 mr-2 shrink-0" />
-              <span>🚀 India's Most Trusted Coding Academy - Ages 7 to 17</span>
+              <span>India's Most Trusted Coding Academy - Ages 7 to 17</span>
             </div>
 
             {/* Headline */}
@@ -60,10 +70,12 @@ const Hero: React.FC = () => {
             </h1>
 
             {/* Typing subline */}
-            <div className="h-10 md:h-12 mb-6 text-xl md:text-2xl text-white/80 font-fredoka font-medium">
-              They'll learn to build{' '}
-              <span className="text-secondary font-bold border-b-2 border-primary/40">{currentText}</span>
-              <span className="animate-pulse text-primary">|</span>
+            <div className="h-12 mb-6 text-xl md:text-3xl text-white/90 font-fredoka font-medium flex items-center justify-center lg:justify-start">
+              <span className="text-gray-300">They'll learn to build&nbsp;</span>
+              <span className="text-secondary font-extrabold border-b-2 border-primary/60 pb-0.5 inline-block">
+                {currentText}
+              </span>
+              <span className="animate-cursor-blink text-primary font-bold ml-1 text-2xl">|</span>
             </div>
 
             {/* Subheadline */}
@@ -79,7 +91,7 @@ const Hero: React.FC = () => {
                 href="/book-demo"
                 className="w-full sm:w-auto btn-primary group px-8 text-base text-center"
               >
-                Start Learning Free 🚀
+                Start Learning Free
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
@@ -136,7 +148,7 @@ const Hero: React.FC = () => {
                   {"    "}self.score = <span className="text-primary">0</span>{"\n"}
                   {"\n"}
                   {"  "}<span className="text-secondary">def</span> <span className="text-primary">on_win</span>(self):{"\n"}
-                  {"    "}print(<span className="text-primary">"Coding is a Superpower! 🚀"</span>){"\n"}
+                  {"    "}print(<span className="text-primary">"Coding is a Superpower!"</span>){"\n"}
                   {"    "}self.player.celebrate(){"\n"}
                   {"\n"}
                   game = MyFirstGame(){"\n"}

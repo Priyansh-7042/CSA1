@@ -1,16 +1,25 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 
-  import.meta.env?.VITE_SUPABASE_URL || 
-  process.env.NEXT_PUBLIC_SUPABASE_URL || 
-  '';
+const getEnvVar = (viteKey: string, nextKey: string): string => {
+  if (typeof process !== 'undefined' && process.env && process.env[nextKey]) {
+    return process.env[nextKey] || '';
+  }
+  try {
+    // @ts-ignore
+    if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[viteKey]) {
+      // @ts-ignore
+      return import.meta.env[viteKey] || '';
+    }
+  } catch {
+    // ignore
+  }
+  return '';
+};
 
+const supabaseUrl = getEnvVar('VITE_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL');
 const supabaseAnonKey = 
-  import.meta.env?.VITE_SUPABASE_ANON_KEY || 
-  import.meta.env?.VITE_SUPABASE_PUBLISHABLE_KEY || 
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 
-  '';
+  getEnvVar('VITE_SUPABASE_ANON_KEY', 'NEXT_PUBLIC_SUPABASE_ANON_KEY') ||
+  getEnvVar('VITE_SUPABASE_PUBLISHABLE_KEY', 'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
 
 const isValidCredentials = (url: string, key: string) => {
   if (!url || url.includes('YOUR_SUPABASE_URL')) return false;
@@ -28,7 +37,8 @@ export const supabase = isValidCredentials(supabaseUrl, supabaseAnonKey)
   : (new Proxy({}, {
       get() {
         const dummyFunc = () => {
-          throw new Error('Supabase is not configured or configured with an invalid URL.');
+          console.warn('Supabase credentials missing or invalid.');
+          return Promise.resolve({ data: null, error: null });
         };
         return new Proxy(dummyFunc, {
           get() {
@@ -37,3 +47,4 @@ export const supabase = isValidCredentials(supabaseUrl, supabaseAnonKey)
         });
       }
     }) as unknown as ReturnType<typeof createClient>);
+

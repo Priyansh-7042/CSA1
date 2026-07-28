@@ -44,32 +44,32 @@ export default function Home() {
   // Why parents choose us features data
   const features = [
     {
-      icon: <Trophy className="w-8 h-8" />,
+      image: '/images/features/feature_1.png',
       title: 'Project Showcase & Certificates',
       description: 'Every child builds a real project - a game, website, or app - and earns an ISO-certified certificate they are genuinely proud of.'
     },
     {
-      icon: <Code className="w-8 h-8" />,
+      image: '/images/features/feature_2.png',
       title: '100% Fun & Interactive',
       description: 'No boring lectures. Kids learn by building things they care about. Coding is the most exciting part of their week!'
     },
     {
-      icon: <Users className="w-8 h-8" />,
+      image: '/images/features/feature_3.png',
       title: 'Live Expert Mentors',
       description: 'Our mentors are trained to keep young minds engaged and excited. Small batches ensure personalized attention for every child.'
     },
     {
-      icon: <BrainCircuit className="w-8 h-8" />,
+      image: '/images/features/feature_4.png',
       title: 'Future Advantage',
       description: 'Coding teaches logical thinking and problem-solving, making kids significantly better at Math and Science in school.'
     },
     {
-      icon: <Rocket className="w-8 h-8" />,
+      image: '/images/features/feature_5.png',
       title: 'Competition Readiness',
       description: 'We prepare students for National Coding Olympiads, Hackathons, and school-level competitions. Our students win!'
     },
     {
-      icon: <ShieldCheck className="w-8 h-8" />,
+      image: '/images/features/feature_6.png',
       title: 'Parent Approved',
       description: 'Loved by 500+ parents. We focus on transforming screen time into creative time. Your child will love it - we guarantee it.'
     }
@@ -78,22 +78,22 @@ export default function Home() {
   // How it works steps
   const steps = [
     {
-      icon: <Code className="w-6 h-6 text-primary" />,
+      image: "/images/steps/step_1.png",
       title: "Step 1: Learn by Building",
       desc: "No boring theory. Kids start building their first project from Day 1."
     },
     {
-      icon: <Sparkles className="w-6 h-6 text-primary" />,
+      image: "/images/steps/step_2.png",
       title: "Step 2: Expert Guidance",
       desc: "Live 1:1 or small group sessions with mentors who make coding fun."
     },
     {
-      icon: <Trophy className="w-6 h-6 text-primary" />,
+      image: "/images/steps/step_3.png",
       title: "Step 3: Master the Logic",
       desc: "We teach the 'why' behind the code, building critical thinking skills."
     },
     {
-      icon: <Presentation className="w-6 h-6 text-primary" />,
+      image: "/images/steps/step_4.png",
       title: "Step 4: Show the World",
       desc: "Your child presents their final project at our Demo Day event. The pride on their face? Priceless."
     }
@@ -115,7 +115,7 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full -mr-48 -mt-48"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-dark-base mb-6">
+            <h2 className="text-2xl md:text-4xl font-bold text-dark-base mb-6">
               Why Parents Choose <span className="text-secondary">Coding Skills Academy?</span>
             </h2>
             <p className="text-gray-500 max-w-2xl mx-auto text-lg font-poppins">
@@ -128,13 +128,17 @@ export default function Home() {
                 key={index} 
                 className="bg-white p-8 rounded-2xl border border-gray-100 shadow-soft hover:shadow-orange hover:border-primary/30 transition-all duration-300 hover:-translate-y-2 group"
               >
-                <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform duration-300">
-                  {feature.icon}
+                <div className="w-full max-w-[10rem] mb-6 flex items-center justify-center overflow-hidden rounded-2xl bg-primary/5 p-2.5 border border-primary/10 group-hover:scale-105 transition-transform duration-300 mx-auto aspect-square">
+                  <img 
+                    src={feature.image} 
+                    alt={feature.title} 
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <h3 className="text-xl font-bold text-dark-base mb-3 font-fredoka group-hover:text-secondary transition-colors">
                   {feature.title}
                 </h3>
-                <p className="text-gray-500 font-poppins leading-relaxed">
+                <p className="text-gray-500 font-poppins leading-relaxed text-justify">
                   {feature.description}
                 </p>
               </div>
@@ -153,7 +157,7 @@ export default function Home() {
               <h2 className="text-3xl md:text-5xl font-bold text-dark-base mb-8">
                 Coding Skills Academy <br/><span className="text-secondary">Learn | Create | Code</span>
               </h2>
-              <p className="text-gray-600 text-lg mb-8 font-poppins leading-relaxed">
+              <p className="text-gray-600 text-lg mb-8 font-poppins leading-relaxed text-justify">
                 Coding Skills Academy is an educational platform that helps students aged 7 to 17 learn coding through engaging, personalized, and practical education. We provide online coding classes with hands-on projects, creative thinking, logical problem-solving, and confidence-building through technology.
               </p>
               
@@ -189,17 +193,21 @@ export default function Home() {
           {/* How it works */}
           <div className="bg-white rounded-3xl p-8 md:p-16 shadow-soft border border-gray-100">
             <div className="text-center mb-16">
-              <h3 className="text-3xl font-bold text-dark-base mb-4">How Your Child <span className="text-secondary">Becomes a Creator</span></h3>
+              <h3 className="text-2xl md:text-4xl font-bold text-dark-base mb-4">How Your Child <span className="text-secondary">Becomes a Creator</span></h3>
               <p className="text-gray-500 font-poppins">Our 4-step journey to building confidence and skills.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {steps.map((step, i) => (
-                <div key={i} className="text-center group">
-                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                    {step.icon}
+                <div key={i} className="text-center group flex flex-col items-center">
+                  <div className="w-[7.5rem] h-[7.5rem] mb-6 flex items-center justify-center overflow-hidden rounded-2xl bg-primary/5 p-2.5 border border-primary/10 group-hover:scale-105 transition-transform duration-300">
+                    <img 
+                      src={step.image} 
+                      alt={step.title} 
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                   <h4 className="text-xl font-bold text-dark-base font-fredoka mb-3">{step.title}</h4>
-                  <p className="text-gray-500 text-sm font-poppins leading-relaxed">{step.desc}</p>
+                  <p className="text-gray-500 text-sm font-poppins leading-relaxed text-justify">{step.desc}</p>
                 </div>
               ))}
             </div>
@@ -314,7 +322,7 @@ export default function Home() {
               <h2 className="text-3xl md:text-5xl font-bold text-dark-base mb-6">
                 Connect With <span className="text-secondary">Our Team</span>
               </h2>
-              <p className="text-gray-500 mb-8 font-poppins leading-relaxed">
+              <p className="text-gray-500 mb-8 font-poppins leading-relaxed text-justify">
                 Have questions about our course structures, batch availability, or the custom 1-on-1 trial schedules? Send us a message and our counselor will assist you!
               </p>
               

@@ -82,7 +82,7 @@ const CurriculumModal: React.FC<CurriculumModalProps> = ({ isOpen, onClose, cour
       />
       
       {/* Modal */}
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden animate-fade-in-up border border-gray-100 z-10">
+      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-y-auto max-h-[90vh] animate-fade-in-up border border-gray-100 z-10">
         <button 
           onClick={onClose}
           className="absolute top-6 right-6 p-2 text-gray-400 hover:text-dark-base transition-colors z-10"
@@ -133,14 +133,14 @@ const CurriculumModal: React.FC<CurriculumModalProps> = ({ isOpen, onClose, cour
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-gray-500 mb-1 flex items-center uppercase tracking-wider font-poppins">
-                      <GraduationCap className="w-3 h-3 mr-1 text-primary" /> Child's Class
+                      <GraduationCap className="w-3 h-3 mr-1 text-primary" /> Child's Grade
                     </label>
                     <select 
                       name="classStandard" value={formData.classStandard} onChange={handleChange} required
                       className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-dark-base focus:ring-2 focus:ring-primary transition-all font-poppins appearance-none"
                     >
-                      <option value="" disabled>Select Class</option>
-                      {[...Array(12)].map((_, i) => <option key={i+1} value={`Class ${i+1}`}>{`Class ${i+1}`}</option>)}
+                      <option value="" disabled>Select Grade</option>
+                      {[...Array(12)].map((_, i) => <option key={i+1} value={`Grade ${i+1}`}>{`Grade ${i+1}`}</option>)}
                     </select>
                   </div>
                   <div>

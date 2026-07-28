@@ -43,7 +43,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
       </p>
 
       {/* Course Image */}
-      <div className="w-full flex justify-center mb-4 h-[110px]">
+      <div className="w-full flex justify-center mb-4 h-[132px]">
         <img 
           src={course.image} 
           alt={course.title} 

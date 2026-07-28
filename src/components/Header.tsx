@@ -12,7 +12,7 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -28,13 +28,12 @@ const Header: React.FC = () => {
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
-  const isHomePage = pathname === '/';
-  const textColorClass = (!isScrolled && isHomePage) ? 'text-white' : 'text-dark-base';
-
   return (
-    <nav 
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled || isMobileMenuOpen ? 'bg-white/95 backdrop-blur-md border-b border-dark-base/5 py-3 shadow-soft' : 'bg-transparent py-5'
+    <header 
+      className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-white/95 backdrop-blur-md border-b border-gray-200/80 shadow-md py-2.5' 
+          : 'bg-white/90 backdrop-blur-sm border-b border-gray-100 shadow-sm py-3.5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,7 +43,7 @@ const Header: React.FC = () => {
             <img 
               src="/logo.png" 
               alt="Coding Skills Academy Logo" 
-              className="h-12 w-auto object-contain group-hover:scale-105 transition-transform duration-300"
+              className="h-11 w-auto object-contain group-hover:scale-105 transition-transform duration-300"
             />
           </Link>
           
@@ -55,23 +54,31 @@ const Header: React.FC = () => {
                 key={link.name} 
                 href={link.path}
                 onClick={closeMobileMenu}
-                className={`text-base font-fredoka font-medium transition-colors hover:text-secondary relative group ${
-                  pathname === link.path ? 'text-secondary' : textColorClass
+                className={`text-base font-fredoka font-semibold transition-colors hover:text-secondary relative py-1 ${
+                  pathname === link.path ? 'text-secondary' : 'text-dark-base'
                 }`}
               >
                 {link.name}
-                <span className={`absolute -bottom-1 left-0 w-full h-0.5 bg-secondary transform origin-left transition-transform duration-300 ${
+                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-secondary rounded-full transform origin-left transition-transform duration-300 ${
                   pathname === link.path ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                 }`}></span>
               </Link>
             ))}
             
-            <div className="flex items-center space-x-4">
-              <a href="https://learn.codingskills.co.in" target="_blank" rel="noopener noreferrer" className="btn-secondary text-sm px-6 py-2.5">
+            <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
+              <a 
+                href="https://learn.codingskills.co.in" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="px-6 py-2 rounded-full font-fredoka font-bold text-sm text-secondary border-2 border-secondary hover:bg-secondary hover:text-white transition-all duration-300 shadow-sm"
+              >
                 Login
               </a>
-              <Link href="/book-demo" className="btn-primary text-sm px-6 py-2.5">
-                Book Demo
+              <Link 
+                href="/book-demo" 
+                className="btn-primary text-sm px-6 py-2.5 shadow-md hover:shadow-lg transition-all"
+              >
+                Book Free Demo
               </Link>
             </div>
           </div>
@@ -80,9 +87,8 @@ const Header: React.FC = () => {
           <div className="md:hidden">
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2 transition-colors focus:outline-none ${
-                isMobileMenuOpen ? 'text-dark-base' : textColorClass
-              } hover:text-secondary`}
+              aria-label="Toggle Navigation Menu"
+              className="p-2 text-dark-base hover:text-secondary transition-colors focus:outline-none"
             >
               {isMobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
             </button>
@@ -92,39 +98,42 @@ const Header: React.FC = () => {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 top-[70px] z-40 bg-white/98 backdrop-blur-lg flex flex-col items-center justify-start pt-10 px-4 animate-fade-in-up">
+        <div className="md:hidden fixed inset-x-0 top-[65px] bg-white border-b border-gray-200 shadow-xl flex flex-col items-center py-6 px-6 z-50 animate-fade-in-up">
           {navLinks.map((link) => (
             <Link 
               key={link.name} 
               href={link.path}
               onClick={closeMobileMenu}
-              className={`text-2xl font-fredoka font-semibold mb-6 transition-colors ${
+              className={`text-xl font-fredoka font-semibold my-2.5 transition-colors ${
                 pathname === link.path ? 'text-secondary' : 'text-dark-base hover:text-secondary'
               }`}
             >
               {link.name}
             </Link>
           ))}
-          <a 
-            href="https://learn.codingskills.co.in" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            onClick={closeMobileMenu}
-            className="w-full max-w-xs btn-secondary py-3 text-center mb-4 text-lg font-fredoka"
-          >
-            Login
-          </a>
-          <Link 
-            href="/book-demo" 
-            onClick={closeMobileMenu}
-            className="w-full max-w-xs btn-primary py-3 text-center text-lg font-fredoka"
-          >
-            Book Free Demo
-          </Link>
+          <div className="w-full max-w-xs flex flex-col gap-3 mt-4 pt-4 border-t border-gray-100">
+            <a 
+              href="https://learn.codingskills.co.in" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              onClick={closeMobileMenu}
+              className="w-full py-2.5 text-center font-fredoka font-bold text-secondary border-2 border-secondary hover:bg-secondary hover:text-white rounded-full transition-all duration-300"
+            >
+              Login
+            </a>
+            <Link 
+              href="/book-demo" 
+              onClick={closeMobileMenu}
+              className="w-full btn-primary py-3 text-center text-base font-fredoka shadow-md"
+            >
+              Book Free Demo
+            </Link>
+          </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 };
 
 export default Header;
+

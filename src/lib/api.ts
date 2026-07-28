@@ -80,6 +80,37 @@ export const api = {
       return curriculumData;
     }
   },
+
+  // --- Fetch Booked Slots ---
+  getBookedSlotsForDate: async (dateString: string): Promise<string[]> => {
+    try {
+      const { data, error } = await supabase
+        .from('curriculum')
+        .select('message')
+        .eq('lead_type', 'book_demo')
+        .like('message', `Date/Time: ${dateString} at%`);
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data) return [];
+
+      const bookedTimes = data.map(row => {
+        if (!row.message) return null;
+        const parts = row.message.split(' at ');
+        if (parts.length === 2) {
+          return parts[1].trim();
+        }
+        return null;
+      }).filter(Boolean) as string[];
+
+      return bookedTimes;
+    } catch (err) {
+      console.error('Could not fetch booked slots:', err);
+      return [];
+    }
+  },
 };
 
 export default api;

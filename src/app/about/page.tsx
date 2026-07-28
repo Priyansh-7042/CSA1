@@ -33,10 +33,10 @@ export default function AboutPage() {
               <h2 className="text-2xl md:text-4xl font-bold text-dark-base mb-6 font-fredoka">
                 Our Mission &amp; Purpose
               </h2>
-              <p className="text-gray-600 leading-relaxed mb-6">
+              <p className="text-gray-600 leading-relaxed mb-6 text-justify">
                 At CodingSkills Academy, we believe coding is a fundamental 21st-century superpower. Our goal is to transform screen time into creative time. Instead of merely consuming games, websites, and apps, we guide kids and teens aged 7 to 17 to build them from scratch.
               </p>
-              <p className="text-gray-600 leading-relaxed mb-8">
+              <p className="text-gray-600 leading-relaxed mb-8 text-justify">
                 Founded by expert programmers, our curriculum is engineered around logic building, structured computer science concepts, and practical projects. Small batch sizes (max 4 students) ensure that every child receives customized mentorship and support.
               </p>
               
