@@ -1,0 +1,16 @@
+# Hostinger Apache rewrite rules for Next.js Static Export
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Handle 404 pages
+  ErrorDocument 404 /404.html
+
+  # If request is not a file or directory, append trailing slash or serve index.html
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !^/404\.html$
+  RewriteRule ^(.*)$ /$1/index.html [L]
+</IfModule>
