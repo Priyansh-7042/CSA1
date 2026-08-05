@@ -80,9 +80,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         </Link>
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="w-full py-2.5 rounded-xl bg-secondary text-white font-bold hover:bg-opacity-95 shadow-sm hover:shadow-orange transition-all text-xs flex items-center justify-center gap-1.5 font-fredoka uppercase tracking-wider"
+          className="w-full px-2 py-2.5 rounded-xl bg-secondary text-white font-bold hover:bg-opacity-95 shadow-sm hover:shadow-orange transition-all text-[11px] sm:text-xs flex items-center justify-center gap-1.5 font-fredoka uppercase tracking-wide whitespace-nowrap"
         >
-          <Download className="w-3.5 h-3.5" /> Download Curriculum
+          <Download className="w-3.5 h-3.5 shrink-0" />
+          <span>Download Curriculum</span>
         </button>
       </div>
 
