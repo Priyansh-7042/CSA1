@@ -23,9 +23,25 @@ export interface CurriculumData {
   createdAt?: string;
 }
 
+// Offline helper to store leads in browser localStorage for testing when database is offline
+const storeOfflineLead = (type: string, data: Record<string, any>) => {
+  if (typeof window !== 'undefined') {
+    try {
+      const existing = JSON.parse(localStorage.getItem('csa_offline_leads') || '[]');
+      const newLead = { ...data, _lead_type_category: type, _timestamp: new Date().toISOString() };
+      existing.push(newLead);
+      localStorage.setItem('csa_offline_leads', JSON.stringify(existing));
+      console.log(`📌 [CSA Lead Stored Offline/Local] (${type}):`, newLead);
+    } catch (e) {
+      console.warn('Could not store lead to localStorage', e);
+    }
+  }
+};
+
 export const api = {
   // --- Contact Us submissions ---
   saveContact: async (contactData: ContactData): Promise<ContactData> => {
+    storeOfflineLead('contact_us', contactData);
     try {
       const { data, error } = await supabase
         .from('contact_us')
@@ -52,6 +68,7 @@ export const api = {
 
   // --- Curriculum Downloads & Demo Bookings ---
   saveCurriculum: async (curriculumData: CurriculumData): Promise<CurriculumData> => {
+    storeOfflineLead('curriculum', curriculumData);
     try {
       const { data, error } = await supabase
         .from('curriculum')

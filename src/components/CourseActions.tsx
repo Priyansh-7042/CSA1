@@ -22,8 +22,13 @@ const CourseActions: React.FC<CourseActionsProps> = ({ courseTitle, curriculumPd
         <Calendar className="w-5 h-5 shrink-0" /> Book FREE Demo Class
       </Link>
       <button 
-        onClick={() => setIsModalOpen(true)}
-        className="btn-secondary py-3.5 sm:py-4 px-5 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 w-full sm:w-auto group"
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsModalOpen(true);
+        }}
+        className="btn-secondary py-3.5 sm:py-4 px-5 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg flex items-center justify-center gap-2 w-full sm:w-auto group cursor-pointer"
       >
         <Download className="w-5 h-5 text-secondary group-hover:text-white transition-colors shrink-0" /> Download Curriculum
       </button>

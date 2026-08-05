@@ -79,8 +79,13 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
           View Details
         </Link>
         <button 
-          onClick={() => setIsModalOpen(true)}
-          className="w-full px-2 py-2.5 rounded-xl bg-secondary text-white font-bold hover:bg-opacity-95 shadow-sm hover:shadow-orange transition-all text-[11px] sm:text-xs flex items-center justify-center gap-1.5 font-fredoka uppercase tracking-wide whitespace-nowrap"
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsModalOpen(true);
+          }}
+          className="w-full px-2 py-2.5 rounded-xl bg-secondary text-white font-bold hover:bg-opacity-95 shadow-sm hover:shadow-orange transition-all text-[11px] sm:text-xs flex items-center justify-center gap-1.5 font-fredoka uppercase tracking-wide whitespace-nowrap cursor-pointer z-10"
         >
           <Download className="w-3.5 h-3.5 shrink-0" />
           <span>Download Curriculum</span>

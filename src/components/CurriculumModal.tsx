@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, User, Phone, Mail, GraduationCap, Send, FileDown, Baby } from 'lucide-react';
 import { api } from '../lib/api';
 
@@ -12,6 +13,7 @@ interface CurriculumModalProps {
 }
 
 const CurriculumModal: React.FC<CurriculumModalProps> = ({ isOpen, onClose, courseTitle, pdfUrl }) => {
+  const [mounted, setMounted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
@@ -23,7 +25,37 @@ const CurriculumModal: React.FC<CurriculumModalProps> = ({ isOpen, onClose, cour
     classStandard: '',
   });
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Lock background scroll when popup is active
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    // Auto-close handler if another course modal is clicked
+    const handleCloseOthers = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail !== courseTitle) {
+        onClose();
+      }
+    };
+
+    window.addEventListener('close-all-curriculum-modals', handleCloseOthers);
+    
+    // Broadcast event so any previously opened modal closes instantly
+    window.dispatchEvent(new CustomEvent('close-all-curriculum-modals', { detail: courseTitle }));
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('close-all-curriculum-modals', handleCloseOthers);
+    };
+  }, [isOpen, courseTitle, onClose]);
+
+  if (!isOpen || !mounted) return null;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -73,19 +105,25 @@ const CurriculumModal: React.FC<CurriculumModalProps> = ({ isOpen, onClose, cour
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4">
+  const modalNode = (
+    <div 
+      className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 overflow-y-auto font-poppins"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-[#2e2e2e]/80 backdrop-blur-sm animate-fade-in" 
+        className="fixed inset-0 bg-[#2e2e2e]/80 backdrop-blur-md animate-fade-in" 
         onClick={onClose}
       />
       
-      {/* Modal */}
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-y-auto max-h-[92vh] animate-fade-in-up border border-gray-100 z-10 mx-auto">
+      {/* Modal Popup */}
+      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-y-auto max-h-[88vh] sm:max-h-[90vh] animate-fade-in-up border border-gray-100 z-[100000] mx-auto my-auto">
         <button 
+          type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 text-gray-400 hover:text-dark-base hover:bg-gray-50 rounded-full transition-colors z-10"
+          className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 text-gray-400 hover:text-dark-base hover:bg-gray-50 rounded-full transition-colors z-20 cursor-pointer"
           aria-label="Close modal"
         >
           <X className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -185,6 +223,8 @@ const CurriculumModal: React.FC<CurriculumModalProps> = ({ isOpen, onClose, cour
       </div>
     </div>
   );
+
+  return createPortal(modalNode, document.body);
 };
 
 export default CurriculumModal;

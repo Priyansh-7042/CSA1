@@ -142,6 +142,23 @@ const BookDemoPage: React.FC = () => {
     }
   };
 
+  const handleStep1Proceed = async () => {
+    if (formData.phone.length === 10) {
+      try {
+        await api.saveCurriculum({
+          name: 'Demo Lead (Step 1)',
+          phone: formData.phone,
+          email: 'pending-step2@codingskills.co.in',
+          lead_type: 'book_demo_partial',
+          message: 'Step 1 phone number entered'
+        });
+      } catch (err) {
+        console.error('Error saving partial step 1 lead:', err);
+      }
+      setStep(2);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -262,7 +279,7 @@ Preferred Time: ${formData.preferredTime}`;
                       </div>
                       <button 
                         type="button" 
-                        onClick={() => { if (formData.phone.length === 10) setStep(2); }}
+                        onClick={handleStep1Proceed}
                         disabled={formData.phone.length !== 10}
                         className="w-full btn-primary py-4 text-lg mt-4 flex items-center justify-center font-now group disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:shadow-none transition-all"
                       >
