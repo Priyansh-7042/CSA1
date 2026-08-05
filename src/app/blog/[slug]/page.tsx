@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { ArrowLeft, User, Calendar as CalendarIcon } from 'lucide-react';
 import Link from 'next/link';
-import { MDXRemote } from 'next-mdx-remote/rsc';
+import MarkdownContent from '../../../components/MarkdownContent';
 import { getBlogPostBySlug, getAllBlogPosts } from '../../../lib/mdx';
 import JsonLd from '../../../components/JsonLd';
 
@@ -134,7 +134,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
 
           {/* MDX Body Content */}
           <div className="prose prose-lg max-w-none prose-headings:font-fredoka prose-headings:text-dark-base prose-p:font-poppins prose-p:text-gray-600 prose-a:text-secondary mb-16">
-            <MDXRemote source={post.content} />
+            <MarkdownContent content={post.content} />
           </div>
         </article>
 

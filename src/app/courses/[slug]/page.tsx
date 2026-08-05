@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { BookOpen, Calendar as CalendarIcon, ShieldCheck, Clock, Users, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { MDXRemote } from 'next-mdx-remote/rsc';
+import MarkdownContent from '../../../components/MarkdownContent';
 import { getCourseBySlug, getAllCourses } from '../../../lib/mdx';
 import FAQAccordion from '../../../components/FAQAccordion';
 import CourseActions from '../../../components/CourseActions';
@@ -183,7 +183,7 @@ export default function CoursePage({ params }: CoursePageProps) {
 
         {/* MDX Body Description Content */}
         <div className="bg-white rounded-3xl p-8 md:p-12 border border-gray-100/80 shadow-soft mb-12 text-left prose prose-lg max-w-none prose-headings:font-fredoka prose-headings:text-dark-base prose-p:font-poppins prose-p:text-gray-600 prose-a:text-secondary">
-          <MDXRemote source={course.content} />
+          <MarkdownContent content={course.content} />
         </div>
 
         {/* FAQs Accordion Block */}
