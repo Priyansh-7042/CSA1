@@ -9,34 +9,42 @@ const CodeRain: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
+
+    let isVisible = true;
+    let animationFrameId: number;
+    let lastDrawTime = 0;
+    const fps = 30;
+    const interval = 1000 / fps;
+    const fontSize = 16;
+    const rainColor = '#fbb040'; // Primary yellow
+
+    const chars = '{ } ; ( ) => # < /> // import def class function const let 0 1 2 3 4 5 6 7 8 9 A B C D E F'.split(' ');
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
 
-    const chars = '{ } ; ( ) => # < /> // import def class function const let 0 1 2 3 4 5 6 7 8 9 A B C D E F'.split(' ');
-    
-    const fontSize = 16;
+    let resizeTimeout: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(resizeCanvas, 150);
+    };
+    window.addEventListener('resize', handleResize);
+
     let columns = Math.floor(canvas.width / fontSize);
     let drops: number[] = [];
-    
+
     for (let i = 0; i < columns; i++) {
       drops[i] = Math.random() * -100;
     }
 
-    const rainColor = '#fbb040'; // Primary yellow
-    
-    let animationFrameId: number;
-    let lastDrawTime = 0;
-    const fps = 30;
-    const interval = 1000 / fps;
-
     const draw = (currentTime: number) => {
+      if (!isVisible) return;
+
       animationFrameId = requestAnimationFrame(draw);
 
       if (currentTime - lastDrawTime < interval) return;
@@ -51,7 +59,7 @@ const CodeRain: React.FC = () => {
         }
       }
 
-      ctx.fillStyle = `rgba(46, 46, 46, 0.15)`; 
+      ctx.fillStyle = '#2e2e2e';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.fillStyle = rainColor;
@@ -61,11 +69,8 @@ const CodeRain: React.FC = () => {
         const text = chars[Math.floor(Math.random() * chars.length)];
         const x = i * fontSize;
         const y = drops[i] * fontSize;
-        
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = rainColor;
+
         ctx.fillText(text, x, y);
-        ctx.shadowBlur = 0;
 
         if (y > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
@@ -74,25 +79,46 @@ const CodeRain: React.FC = () => {
       }
     };
 
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) {
+          lastDrawTime = performance.now();
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = requestAnimationFrame(draw);
+        } else {
+          cancelAnimationFrame(animationFrameId);
+        }
+      },
+      { threshold: 0.01 }
+    );
+
+    observer.observe(canvas);
+
     const handleVisibilityChange = () => {
       if (document.hidden) {
+        isVisible = false;
         cancelAnimationFrame(animationFrameId);
       } else {
+        isVisible = true;
         lastDrawTime = performance.now();
+        cancelAnimationFrame(animationFrameId);
         animationFrameId = requestAnimationFrame(draw);
       }
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    
+
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!prefersReducedMotion) {
       animationFrameId = requestAnimationFrame(draw);
     }
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
+      clearTimeout(resizeTimeout);
+      window.removeEventListener('resize', handleResize);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      observer.disconnect();
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
@@ -106,4 +132,5 @@ const CodeRain: React.FC = () => {
   );
 };
 
-export default CodeRain;
+export default React.memo(CodeRain);
+

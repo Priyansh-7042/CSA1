@@ -132,6 +132,8 @@ export default function Home() {
                   <img 
                     src={feature.image} 
                     alt={feature.title} 
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-contain"
                   />
                 </div>
@@ -185,6 +187,8 @@ export default function Home() {
               <img 
                 src="/about-kids-coding.png" 
                 alt="Kids Coding Future" 
+                loading="lazy"
+                decoding="async"
                 className="w-full h-auto drop-shadow-xl rounded-2xl"
               />
             </div>
@@ -203,6 +207,8 @@ export default function Home() {
                     <img 
                       src={step.image} 
                       alt={step.title} 
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-contain"
                     />
                   </div>
@@ -253,6 +259,8 @@ export default function Home() {
                     <img 
                       src={post.coverImage || '/images/blog/default.jpg'} 
                       alt={post.title}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>

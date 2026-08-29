@@ -47,6 +47,8 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         <img 
           src={course.image} 
           alt={course.title} 
+          loading="lazy"
+          decoding="async"
           className="w-auto h-full object-contain transform hover:scale-105 transition-transform duration-300"
         />
       </div>
