@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import { Certificate } from '@/lib/internshipTypes';
-import { SIGNATURE_DHARMESH, SIGNATURE_KRISHNA } from '@/lib/signatureAssets';
+import { SIGNATURE_DHARMESH, SIGNATURE_KRISHNA, LOGO_CSA, STAMP_CSA } from '@/lib/signatureAssets';
 import { CheckCircle2, Download, Printer, ShieldCheck, X } from 'lucide-react';
 
 interface CertificateViewerProps {
@@ -147,11 +147,20 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
             img.src = src;
           });
 
-        // Load Signatures (From embedded Base64 - 100% synchronous & reliable)
-        const [sigDharmesh, sigKrishna] = await Promise.all([
+        // Load Assets (From embedded Base64 - 100% synchronous & reliable)
+        const [sigDharmesh, sigKrishna, imgLogo, imgStamp] = await Promise.all([
           loadImg(SIGNATURE_DHARMESH),
           loadImg(SIGNATURE_KRISHNA),
+          loadImg(LOGO_CSA),
+          loadImg(STAMP_CSA),
         ]);
+
+        // Draw CSA Logo on left upper side (Bigger & Prominent Size)
+        if (imgLogo && imgLogo.width > 0) {
+          const logoH = 72;
+          const logoW = Math.round(logoH * (imgLogo.width / imgLogo.height));
+          ctx.drawImage(imgLogo, 55, 45, logoW, logoH);
+        }
 
         // Draw Dharmesh (Coding Instructor) Signature (Balanced Size, Pulled Down for Equal Gap)
         if (sigDharmesh && sigDharmesh.width > 0) {
@@ -167,6 +176,16 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
         ctx.font = '400 11px Poppins, sans-serif';
         ctx.fillStyle = '#888888';
         ctx.fillText('Coding Skills Academy', width / 2, 610);
+
+        // Draw Official Stamp above Founder Signature (Bigger & Prominent Circular Seal)
+        if (imgStamp && imgStamp.width > 0) {
+          ctx.save();
+          ctx.globalAlpha = 0.94;
+          ctx.translate(width - 190, 470);
+          ctx.rotate(-0.08); // Subtle natural tilt
+          ctx.drawImage(imgStamp, -63, -63, 126, 126);
+          ctx.restore();
+        }
 
         // Draw Mrs. Krishna (Founder & Director) Signature (Compact Sleek Size)
         if (sigKrishna && sigKrishna.width > 0) {
@@ -278,15 +297,17 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
 
         {/* Certificate Inner Frame Border */}
         <div className="border border-[#D4AF37]/50 p-6 md:p-10 rounded-xl relative z-10">
+          {/* Logo on Left Upper Side (Bigger & Prominent Size) */}
+          <div className="sm:absolute sm:top-6 sm:left-6 md:top-8 md:left-8 flex justify-center sm:justify-start mb-4 sm:mb-0">
+            <img
+              src="/logo.png"
+              alt="Coding Skills Academy"
+              className="h-16 sm:h-20 md:h-24 w-auto object-contain drop-shadow-sm"
+            />
+          </div>
+
           {/* Header Section */}
-          <div className="text-center">
-            <div className="flex justify-center mb-3">
-              <img
-                src="/logo.png"
-                alt="Coding Skills Academy"
-                className="h-16 md:h-20 w-auto object-contain"
-              />
-            </div>
+          <div className="text-center sm:pt-2">
             <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
               <span className="text-[11px] md:text-xs uppercase tracking-[0.25em] font-bold text-secondary">
                 Coding Skills Academy
@@ -361,9 +382,17 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
               <p className="text-[9px] md:text-[10px] text-gray-400">Coding Skills Academy</p>
             </div>
 
-            {/* Right: Founder - Mrs. Krishna (Compacted) */}
-            <div className="flex flex-col items-center sm:items-end justify-center">
-              <div className="h-16 flex items-end justify-center sm:justify-end mb-1">
+            {/* Right: Founder - Mrs. Krishna (with Official Stamp) */}
+            <div className="flex flex-col items-center sm:items-end justify-center relative">
+              {/* Official Stamp above Founder Signature (Bigger & Prominent Size) */}
+              <div className="absolute -top-16 sm:-top-20 md:-top-24 right-1/2 translate-x-1/2 sm:translate-x-0 sm:-right-2 pointer-events-none z-10 opacity-95">
+                <img
+                  src="/stamp.png"
+                  alt="Official CSA Stamp"
+                  className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-contain -rotate-6 drop-shadow-md"
+                />
+              </div>
+              <div className="h-16 flex items-end justify-center sm:justify-end mb-1 relative z-20">
                 <img
                   src={SIGNATURE_KRISHNA}
                   alt="Mrs. Krishna Signature"
