@@ -114,17 +114,21 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
         );
 
         // 7. Duration pill
+        ctx.font = '600 13px Poppins, sans-serif';
+        const durationText = `Duration: ${certificate.duration}`;
+        const durMetrics = ctx.measureText(durationText);
+        const pillWidth = Math.max(260, durMetrics.width + 40);
+
         ctx.fillStyle = '#F3F2EE';
         ctx.beginPath();
-        ctx.roundRect(width / 2 - 130, 395, 260, 30, 15);
+        ctx.roundRect(width / 2 - pillWidth / 2, 395, pillWidth, 30, 15);
         ctx.fill();
         ctx.strokeStyle = '#E0DDD5';
         ctx.lineWidth = 1;
         ctx.stroke();
 
         ctx.fillStyle = '#444444';
-        ctx.font = '600 13px Poppins, sans-serif';
-        ctx.fillText(`Duration: ${certificate.duration}`, width / 2, 415);
+        ctx.fillText(durationText, width / 2, 415);
 
         // 8. Bottom separator
         ctx.strokeStyle = '#E5E2DA';

@@ -180,12 +180,12 @@ const DEFAULT_CERTIFICATES: Certificate[] = [
   {
     id: 'cert-shaurya-01',
     credential_id: 'CSA-2026-000108',
-    student_name: 'Shaurya Sahani',
+    student_name: 'Shaurya Sahni',
     programme_name: 'Coding Skills Academy Internship Programme',
     certificate_type: 'Certificate of Internship & Project Completion',
     department: 'AI & Emerging Technologies',
     role: 'AI Project Development Intern',
-    duration: '6 Months',
+    duration: '1 Month (Oct 15 - Nov 15)',
     issue_date: '2026-11-15',
     verification_status: 'VERIFIED',
     issuing_authority: 'Coding Skills Academy (ISO 9001:2015 Certified)',
@@ -346,7 +346,7 @@ const STORAGE_KEYS = {
   OPPORTUNITIES: 'csa_internship_opportunities_v4',
   APPLICATIONS: 'csa_internship_applications_v4',
   PARTICIPANTS: 'csa_internship_participants_v4',
-  CERTIFICATES: 'csa_internship_certificates_v5',
+  CERTIFICATES: 'csa_internship_certificates_v6',
 };
 
 // ============================================================================
@@ -714,6 +714,13 @@ export const internshipService = {
         status: 'NOT_FOUND',
         message: 'Certificate Not Found. The entered Credential ID does not match any certificate issued by Coding Skills Academy.',
       };
+    }
+
+    // Sync seed updates for default certificates
+    const seedCert = DEFAULT_CERTIFICATES.find((c) => c.credential_id.toUpperCase() === cleanId);
+    if (seedCert) {
+      found.student_name = seedCert.student_name;
+      found.duration = seedCert.duration;
     }
 
     return {
