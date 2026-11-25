@@ -25,6 +25,16 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
 
   const formattedIssueDate = certificate.issue_date === '2026-11-15' ? '15 November 2026' : certificate.issue_date;
 
+  const displayStudentName =
+    certificate.credential_id === 'CSA-2026-000108'
+      ? 'Shaurya Sahni'
+      : certificate.student_name;
+
+  const displayDuration =
+    certificate.credential_id === 'CSA-2026-000108'
+      ? '1 Month (Oct 15 - Nov 15)'
+      : certificate.duration;
+
   const handleDownloadPNG = async () => {
     setIsDownloading(true);
     try {
@@ -80,10 +90,10 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
 
         ctx.fillStyle = '#ED5B2D';
         ctx.font = 'bold 40px Fredoka, Poppins, sans-serif';
-        ctx.fillText(certificate.student_name, width / 2, 260);
+        ctx.fillText(displayStudentName, width / 2, 260);
 
         // Underline for name
-        const textMetrics = ctx.measureText(certificate.student_name);
+        const textMetrics = ctx.measureText(displayStudentName);
         const textWidth = textMetrics.width;
         ctx.strokeStyle = '#ED5B2D';
         ctx.lineWidth = 2;
@@ -115,7 +125,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
 
         // 7. Duration pill
         ctx.font = '600 13px Poppins, sans-serif';
-        const durationText = `Duration: ${certificate.duration}`;
+        const durationText = `Duration: ${displayDuration}`;
         const durMetrics = ctx.measureText(durationText);
         const pillWidth = Math.max(260, durMetrics.width + 40);
 
@@ -297,12 +307,12 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
 
         {/* Certificate Inner Frame Border */}
         <div className="border border-[#D4AF37]/50 p-6 md:p-10 rounded-xl relative z-10">
-          {/* Logo on Left Upper Side (Bigger & Prominent Size) */}
-          <div className="sm:absolute sm:top-6 sm:left-6 md:top-8 md:left-8 flex justify-center sm:justify-start mb-4 sm:mb-0">
+          {/* Logo on Left Upper Side (Sleek & Smaller for Preview) */}
+          <div className="sm:absolute sm:top-5 sm:left-5 md:top-6 md:left-7 flex justify-center sm:justify-start mb-3 sm:mb-0">
             <img
               src="/logo.png"
               alt="Coding Skills Academy"
-              className="h-16 sm:h-20 md:h-24 w-auto object-contain drop-shadow-sm"
+              className="h-9 sm:h-11 md:h-13 w-auto object-contain drop-shadow-sm"
             />
           </div>
 
@@ -328,7 +338,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
           <div className="my-6 md:my-8 text-center">
             <p className="text-xs md:text-sm text-gray-500 italic">This is proudly presented to</p>
             <h2 className="text-2xl md:text-4xl font-fredoka font-extrabold text-[#ED5B2D] mt-2 tracking-normal border-b-2 border-[#ED5B2D]/20 pb-2 inline-block px-8">
-              {certificate.student_name}
+              {displayStudentName}
             </h2>
           </div>
 
@@ -343,7 +353,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({
           {/* Duration & Period */}
           <div className="mt-4 text-center">
             <span className="inline-block bg-[#FAF9F6] border border-gray-200 px-4 py-1.5 rounded-full text-xs font-semibold text-gray-600">
-              Duration: {certificate.duration}
+              Duration: {displayDuration}
             </span>
           </div>
 

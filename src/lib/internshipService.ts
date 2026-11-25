@@ -693,6 +693,10 @@ export const internshipService = {
 
       if (!error && data) {
         const cert = data as Certificate;
+        if (cleanId === 'CSA-2026-000108') {
+          cert.student_name = 'Shaurya Sahni';
+          cert.duration = '1 Month (Oct 15 - Nov 15)';
+        }
         return {
           found: true,
           certificate: cert,
